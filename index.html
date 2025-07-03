@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hi Baby - Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease-in-out;
+    }
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive;
+      background: linear-gradient(135deg, #1a1a1a, #3b3b3b);
+      color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow: hidden;
+      flex-direction: column;
+    }
+    .page {
+      display: none;
+      width: 100%;
+      max-width: 500px;
+    }
+    .page.active {
+      display: block;
+      animation: fadeIn 0.8s ease;
+    }
+    .container {
+      background: rgba(45, 45, 45, 0.95);
+      border: 2px solid silver;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 0 25px rgba(192,192,192,0.8);
+      text-align: center;
+    }
+    h1 {
+      color: maroon;
+      font-size: 2.5em;
+      text-shadow: 1px 1px 2px silver;
+    }
+    button {
+      background-color: maroon;
+      color: silver;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 10px 5px;
+    }
+    button:hover {
+      background-color: #a00000;
+      transform: scale(1.05);
+    }
+    .login-form {
+      display: none;
+      margin-top: 20px;
+    }
+    input[type="text"],
+    input[type="password"] {
+      padding: 10px;
+      width: 80%;
+      margin: 10px auto;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      display: block;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .note-text {
+      color: pink;
+    }
+    .hint-section {
+      margin-top: 20px;
+      display: none;
+    }
+    .hint {
+      margin-top: 10px;
+      color: #ffc0cb;
+      font-style: italic;
+    }
+    .note {
+      color: #ff9999;
+    }
+    .letter-container {
+  background: #2e2e2e;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid silver;
+  overflow-y: auto;
+  max-height: 300px;
+  margin-top: 20px;
+  color: #ff90b3;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+    .custom-audio-container {
+      background: #3b3b3b;
+      border: 2px dashed pink;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 10px;
+    }
+    .play-btn {
+      background-color: #ff90b3;
+      color: white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.2em;
+      border: none;
+    }
+    .progress {
+      background: #fff0f5;
+      height: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    .progress-filled {
+      height: 100%;
+      background-color: #ff5ea3;
+      width: 0%;
+    }
+    .visualizer {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 10px;
+      height: 30px;
+    }
+    .bar {
+      width: 4px;
+      background: #ff9ebf;
+      animation: pulse 1s infinite;
+    }
+    .bar:nth-child(2) { animation-delay: 0.1s; }
+    .bar:nth-child(3) { animation-delay: 0.2s; }
+    .bar:nth-child(4) { animation-delay: 0.3s; }
+    .bar:nth-child(5) { animation-delay: 0.4s; }
+
+    @keyframes pulse {
+      0%, 100% { height: 10px; }
+      50% { height: 30px; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+@media screen and (max-width: 600px) {
+  .container,
+  .letter-container,
+  .custom-audio-container {
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 95%;
+    width: 95%;
+    font-size: 0.95em;
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+
+  .note-text {
+    font-size: 0.95em;
+  }
+
+  button {
+    font-size: 0.9em;
+    padding: 10px 16px;
+  }
+
+  .play-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2em;
+  }
+
+  .progress {
+    height: 10px;
+  }
+
+  .visualizer {
+    height: 30px;
+  }
+
+  .bar {
+    width: 4px;
+  }
+
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    font-size: 1em;
+  }
+
+  .letter-container {
+    max-height: 250px;
+    font-size: 0.95em;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <audio id="bgMusic" src="sweet.mp3" loop></audio>
+
+  <div id="loginPage" class="page active">
+    <div class="container">
+      <h1>hi baby⭑.ᐟ</h1>
+      <button id="loginBtn">Login</button>
+      <div class="login-form" id="loginForm">
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button id="submitLogin">Submit</button>
+      </div>
+      <div class="hint-section" id="hintSection">
+        <p id="hintLabel">yikes, want a hint?</p>
+        <button id="yesHint">yes please (っ◞‸◟ c)</button>
+        <button id="noHint">nope i got this ( ◡̀_◡́)ᕤ</button>
+        <p class="note" id="timerNote"></p>
+        <p class="hint" id="hintText"></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="welcomePage" class="page">
+    <div class="container">
+      <h1>welcome baby ⭑.ᐟ</h1>
+      <p class="note-text">congratulations on figuring it out! (took you long enough)</p>
+      <button id="openLetterBtn">open me ⸜(｡˃ ᵕ ˂ )⸝♡</button>
+    </div>
+  </div>
+
+  <div id="letterPage" class="page">
+    <div class="custom-audio-container" id="audioPlayerContainer">
+      <audio id="mainAudio" src="insideout.mp3"></audio>
+      <div class="controls">
+        <button class="play-btn" id="playAudio">▶</button>
+        <div class="progress" id="progressBar">
+          <div class="progress-filled" id="progressFill"></div>
+        </div>
+        <div class="visualizer">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-container" id="letterContainer">
+      <p id="letterText"></p>
+    </div>
+  </div>
+
+  <script>
+    const pages = {
+      login: document.getElementById("loginPage"),
+      welcome: document.getElementById("welcomePage"),
+      letter: document.getElementById("letterPage")
+    };
+
+    const loginBtn = document.getElementById("loginBtn");
+    const loginForm = document.getElementById("loginForm");
+    const submitLogin = document.getElementById("submitLogin");
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+    const hintSection = document.getElementById("hintSection");
+    const hintLabel = document.getElementById("hintLabel");
+    const yesHint = document.getElementById("yesHint");
+    const noHint = document.getElementById("noHint");
+    const timerNote = document.getElementById("timerNote");
+    const hintText = document.getElementById("hintText");
+
+    const openLetterBtn = document.getElementById("openLetterBtn");
+    const letterContainer = document.getElementById("letterContainer");
+    const letterText = document.getElementById("letterText");
+
+    const bgMusic = document.getElementById("bgMusic");
+    const mainAudio = document.getElementById("mainAudio");
+    const playAudio = document.getElementById("playAudio");
+    const progressFill = document.getElementById("progressFill");
+    const audioPlayerContainer = document.getElementById("audioPlayerContainer");
+
+    let hintTimeout;
+
+    function showPage(pageName) {
+      Object.values(pages).forEach(p => p.classList.remove("active"));
+      pages[pageName].classList.add("active");
+    }
+
+    loginBtn.onclick = () => {
+      loginForm.style.display = "block";
+      loginBtn.style.display = "none";
+      bgMusic.play().catch(() => {});
+    };
+
+    submitLogin.onclick = () => {
+      const user = username.value.trim().toLowerCase();
+      const pass = password.value.trim();
+      if (user === "kabu" && pass === "041125") {
+        showPage("welcome");
+      } else {
+        hintSection.style.display = "block";
+        hintText.textContent = "";
+        timerNote.textContent = "";
+        hintLabel.style.display = "block";
+        noHint.textContent = "nope i got this ( ◡̀_◡́)ᕤ";
+        yesHint.style.display = "inline-block";
+        noHint.style.display = "inline-block";
+        clearTimeout(hintTimeout);
+      }
+    };
+
+    yesHint.onclick = () => {
+      clearTimeout(hintTimeout);
+      hintLabel.style.display = "none";
+      yesHint.style.display = "none";
+      noHint.style.display = "none";
+      timerNote.textContent = "here’s your hint!";
+      hintText.textContent = "a significant date";
+    };
+
+    noHint.onclick = () => {
+      noHint.textContent = "are you sure?";
+      timerNote.textContent = "decide in 5 seconds!";
+      hintTimeout = setTimeout(() => {
+        hintLabel.style.display = "none";
+        yesHint.style.display = "none";
+        noHint.style.display = "none";
+        timerNote.textContent = "goodluck then";
+      }, 5000);
+    };
+
+    openLetterBtn.onclick = () => {
+      showPage("letter");
+      letterText.textContent = "";
+      audioPlayerContainer.style.display = "block";
+      letterContainer.style.display = "block";
+
+      const fullLetter = `Hey, it’s been a while since the last time I gave you a letter or anything — I promise not to make this too long like the last one...
+
+I know things have been rough for the past 2 months, but I’m glad it’s still us. I’m really sorry for all the stuff I keep falling short on, and thank you for always trying to see past those and working things out with me somehow.
+
+Thank you for dealing with my outbursts too. Like I said, I’m trying my best not to involve you in those. I hope you can continue to be there — and I will always be there for you too.
+
+College is coming up and I know you’ve been anxious, but I promise we’ll make it work. Whatever you need help with, as long as I can, I’ll be there. I really want things to work between us. Even if everything goes to hell and things worsen, I’ll always support you.
+
+I’m not just studying for myself but for you too — for a future where we’re far from all the baggage we’ve had to carry.
+
+Anyway, happy 10 (or almost 10?) months! Or if you wanna be technical, happy 3 (or almost 3?) months? (idk when I’m giving this to you so bare with me ok).
+
+Hopefully we’ll get more chances to go on dates in college — I’ll always try to make time as much as I can.
+
+I love you always.
+
+Love,  
+Zaefel ♡`.trim();
+
+      let i = 0;
+      const typeInterval = setInterval(() => {
+        letterText.textContent += fullLetter.charAt(i);
+        i++;
+        if (i >= fullLetter.length) clearInterval(typeInterval);
+      }, 30);
+    };
+
+    playAudio.onclick = () => {
+      if (mainAudio.paused) {
+        mainAudio.play();
+        bgMusic.pause();
+      } else {
+        mainAudio.pause();
+      }
+    };
+
+    mainAudio.ontimeupdate = () => {
+      const percent = (mainAudio.currentTime / mainAudio.duration) * 100;
+      progressFill.style.width = percent + "%";
+    };
+  </script>
+</body>
+</html>
