@@ -1,0 +1,332 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hi Baby - All in One</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+      box-sizing: border-box;
+      transition: all 0.3s ease-in-out;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a, #3b3b3b);
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .page {
+      display: none;
+      max-width: 500px;
+      width: 90%;
+      background: rgba(45, 45, 45, 0.95);
+      border: 2px solid silver;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(192,192,192,0.8);
+      padding: 30px;
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+
+    .show {
+      display: block;
+    }
+
+    h1 {
+      color: maroon;
+      font-size: 2.3em;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: maroon;
+      color: silver;
+      padding: 12px 24px;
+      font-size: 1em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 10px 5px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    button:hover {
+      background-color: #a00000;
+      transform: scale(1.05);
+    }
+
+    input[type="text"], input[type="password"] {
+      padding: 12px;
+      width: 80%;
+      margin: 10px auto;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      display: block;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    .note, .hint, .note-text {
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .letter-text {
+      white-space: pre-wrap;
+      color: #ff5ea3;
+      line-height: 1.6;
+      font-size: 1em;
+      max-height: 300px;
+      overflow-y: auto;
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .audio-container {
+      background: #2e2e2e;
+      border-radius: 15px;
+      padding: 20px;
+      border: 2px solid #ff90b3;
+      margin-bottom: 20px;
+    }
+
+    .progress {
+      background: #fff0f5;
+      border-radius: 20px;
+      height: 10px;
+      width: 100%;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress-filled {
+      height: 100%;
+      background-color: #ff5ea3;
+      width: 0%;
+    }
+
+    .visualizer {
+      margin-top: 12px;
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      align-items: flex-end;
+      height: 30px;
+    }
+
+    .bar {
+      width: 4px;
+      height: 12px;
+      background-color: #ff8fa3;
+      animation: pulse 0.8s infinite ease-in-out;
+    }
+
+    .bar:nth-child(2) { animation-delay: 0.1s; }
+    .bar:nth-child(3) { animation-delay: 0.2s; }
+    .bar:nth-child(4) { animation-delay: 0.3s; }
+
+    @keyframes pulse {
+      0%, 100% { height: 12px; }
+      50% { height: 30px; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media screen and (max-width: 600px) {
+      h1 { font-size: 2em; }
+      .letter-text { font-size: 0.95em; max-height: 250px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Page -->
+  <div id="loginPage" class="page show">
+    <h1>hi baby⭑.ᐟ</h1>
+    <button id="loginBtn">Login</button>
+    <form id="loginForm" style="display: none;">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="hintSection" style="display: none;">
+      <p id="hintLabel">yikes, want a hint?</p>
+      <button id="yesHint">yes please (っ◞‸◟ c)</button>
+      <button id="noHint">nope i got this ( ◡̀_◡́)ᕤ</button>
+      <p class="note" id="timerNote"></p>
+      <p class="hint" id="hintText"></p>
+    </div>
+  </div>
+
+  <!-- Welcome Page -->
+  <div id="welcomePage" class="page">
+    <h1>welcome baby ⭑.ᐟ</h1>
+    <p class="note-text">congratulations on figuring it out! (took you long enough)</p>
+    <button id="openLetter">open me ⸜(｡˃ ᵕ ˂ )⸝♡</button>
+  </div>
+
+  <!-- Letter Page -->
+  <div id="letterPage" class="page">
+    <div class="audio-container">
+      <button id="playAudio">▶ Play</button>
+      <div class="progress"><div id="progressBar" class="progress-filled"></div></div>
+      <div class="visualizer">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      </div>
+    </div>
+    <div class="letter-text" id="letterText"></div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="bgMusic" src="sweet.mp3" loop></audio>
+  <audio id="letterMusic" src="insideout.mp3"></audio>
+
+  <script>
+  const loginBtn = document.getElementById('loginBtn');
+  const loginForm = document.getElementById('loginForm');
+  const loginPage = document.getElementById('loginPage');
+  const welcomePage = document.getElementById('welcomePage');
+  const letterPage = document.getElementById('letterPage');
+  const username = document.getElementById('username');
+  const password = document.getElementById('password');
+  const hintSection = document.getElementById('hintSection');
+  const yesHint = document.getElementById('yesHint');
+  const noHint = document.getElementById('noHint');
+  const hintLabel = document.getElementById('hintLabel');
+  const hintText = document.getElementById('hintText');
+  const timerNote = document.getElementById('timerNote');
+  const openLetter = document.getElementById('openLetter');
+  const letterText = document.getElementById('letterText');
+  const playAudio = document.getElementById('playAudio');
+  const progressBar = document.getElementById('progressBar');
+  const bgMusic = document.getElementById('bgMusic');
+  const letterMusic = document.getElementById('letterMusic');
+
+  const clickSound = new Audio('click.mp3');
+
+  let hintTimeout;
+  let musicStarted = false;
+
+  function playClickSound() {
+    clickSound.currentTime = 0;
+    clickSound.play();
+  }
+
+  function startMusic() {
+    if (!musicStarted) {
+      bgMusic.play().catch(() => {});
+      musicStarted = true;
+    }
+  }
+
+  document.body.addEventListener('click', startMusic, { once: true });
+  document.body.addEventListener('keydown', startMusic, { once: true });
+
+  loginBtn.addEventListener('click', () => {
+    playClickSound();
+    loginForm.style.display = 'block';
+    loginBtn.style.display = 'none';
+  });
+
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    playClickSound();
+    if (username.value === 'kabu' && password.value === '041125') {
+      loginPage.classList.remove('show');
+      welcomePage.classList.add('show');
+    } else {
+      hintSection.style.display = 'block';
+      hintText.textContent = '';
+      timerNote.textContent = '';
+      hintLabel.style.display = 'block';
+      noHint.textContent = 'nope i got this ( ◡̀_◡́)ᕤ';
+      yesHint.style.display = 'inline-block';
+      noHint.style.display = 'inline-block';
+      clearTimeout(hintTimeout);
+    }
+  });
+
+  yesHint.addEventListener('click', () => {
+    playClickSound();
+    clearTimeout(hintTimeout);
+    hintLabel.style.display = 'none';
+    yesHint.style.display = 'none';
+    noHint.style.display = 'none';
+    timerNote.textContent = 'here’s your hint!';
+    hintText.textContent = 'username:a nickname and password:a significant date in numbers only';
+  });
+
+  noHint.addEventListener('click', () => {
+    playClickSound();
+    noHint.textContent = 'are you sure?';
+    timerNote.textContent = 'decide in 5 seconds!';
+    hintTimeout = setTimeout(() => {
+      yesHint.style.display = 'none';
+      noHint.style.display = 'none';
+      hintLabel.style.display = 'none';
+      timerNote.textContent = 'goodluck then';
+    }, 5000);
+  });
+
+  openLetter.addEventListener('click', () => {
+    playClickSound();
+    welcomePage.classList.remove('show');
+    letterPage.classList.add('show');
+
+    const msg = `Hey, it's been a while since the last time I’ve given you a letter or anything. I promise not to make it tooo long like the last one.
+
+I know things have been rough for the past 2 months, but I’m glad it’s still us. I’m really sorry for all the stuff I keep falling short on — and thanks for always trying to see past those issues and working it out with me somehow.
+
+I also wanna thank you for dealing with my outbursts and all that. Like I said, I’m trying my best not to involve you in those. I hope you can continue to be there always — and I’ll be there for you too.
+
+I know college is coming up and you’ve been really anxious about that, but I promise we’ll make it work. Whatever you need help with, as long as I can do something, I’ll make sure to be there. I’m not only studying for myself — but for you too. Basically, a future for us where we’re far from all of the baggage we have from our families.
+
+That aside, happy 10 or almost 10 months? Or if you wanna be technical — happy 3 or almost 3 months. (I don’t know when I’ll give this to you so like bare with me ok lol.)
+
+Hopefully we’ll have more chances to go on dates once we’re in college. I know schedules will be hectic, but I promise to always try to make time.
+
+I love you always.
+
+Love, Zaefel ♡`;
+
+    let i = 0;
+    function typeWriter() {
+      if (i < msg.length) {
+        letterText.innerHTML += msg.charAt(i);
+        i++;
+        setTimeout(typeWriter, 20);
+      }
+    }
+    typeWriter();
+  });
+
+  playAudio.addEventListener('click', () => {
+    playClickSound();
+    bgMusic.pause();
+    letterMusic.play();
+    letterMusic.volume = 0.7;
+
+    letterMusic.addEventListener('timeupdate', () => {
+      const percent = (letterMusic.currentTime / letterMusic.duration) * 100;
+      progressBar.style.width = percent + '%';
+    });
+  });
+</script>
+
+</body>
+</html>
